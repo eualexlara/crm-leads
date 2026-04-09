@@ -498,7 +498,7 @@ export default function Vendas() {
                         color: '#111827',
                       }}
                     >
-                      {pegarNomeLead(venda.leads)}
+                      {pegarNomeLead(venda.leads || null)}
                     </div>
                   </div>
 
