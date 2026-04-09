@@ -9,6 +9,15 @@ type Lead = {
   status_cliente?: string | null
 }
 
+type LeadRelation =
+  | {
+      nome?: string | null
+    }
+  | {
+      nome?: string | null
+    }[]
+  | null
+
 type Venda = {
   id: number
   lead_id: number
@@ -16,9 +25,7 @@ type Venda = {
   custo_servico: number
   data_venda: string
   etiquetas: string[] | null
-  leads?: {
-    nome: string
-  } | null
+  leads?: LeadRelation
 }
 
 const opcoesEtiquetas = [
@@ -57,7 +64,7 @@ export default function Vendas() {
       return
     }
 
-    setLeads(data || [])
+    setLeads((data as Lead[]) || [])
   }
 
   async function buscarVendas() {
@@ -188,10 +195,7 @@ export default function Vendas() {
 
     if (!confirmar) return
 
-    const { error } = await supabase
-      .from('vendas')
-      .delete()
-      .eq('id', id)
+    const { error } = await supabase.from('vendas').delete().eq('id', id)
 
     if (error) {
       alert('Erro ao excluir venda: ' + error.message)
@@ -293,13 +297,22 @@ export default function Vendas() {
     return encontrada ? encontrada.label : etiqueta
   }
 
+  function pegarNomeLead(relacao: LeadRelation) {
+    if (!relacao) return '-'
+    if (Array.isArray(relacao)) {
+      return relacao[0]?.nome || '-'
+    }
+    return relacao.nome || '-'
+  }
+
   return (
     <div
       style={{
         minHeight: '100vh',
         padding: 30,
         fontFamily: 'Arial',
-        background: 'linear-gradient(135deg, #eef2ff 0%, #f8fafc 50%, #ecfeff 100%)',
+        background:
+          'linear-gradient(135deg, #eef2ff 0%, #f8fafc 50%, #ecfeff 100%)',
       }}
     >
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
@@ -308,7 +321,8 @@ export default function Vendas() {
             marginBottom: 25,
             padding: 24,
             borderRadius: 20,
-            background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 45%, #06b6d4 100%)',
+            background:
+              'linear-gradient(135deg, #1d4ed8 0%, #2563eb 45%, #06b6d4 100%)',
             color: '#ffffff',
             boxShadow: '0 15px 40px rgba(37, 99, 235, 0.35)',
           }}
@@ -416,12 +430,18 @@ export default function Vendas() {
             </div>
 
             <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-              <button onClick={salvarOuEditarVenda} style={buttonStyle('primary')}>
+              <button
+                onClick={salvarOuEditarVenda}
+                style={buttonStyle('primary')}
+              >
                 {editandoId ? 'Salvar edição' : 'Salvar venda'}
               </button>
 
               {editandoId && (
-                <button onClick={limparFormulario} style={buttonStyle('secondary')}>
+                <button
+                  onClick={limparFormulario}
+                  style={buttonStyle('secondary')}
+                >
                   Cancelar
                 </button>
               )}
@@ -441,7 +461,8 @@ export default function Vendas() {
           }}
         >
           {vendas.map((venda) => {
-            const lucro = Number(venda.valor_venda) - Number(venda.custo_servico)
+            const lucro =
+              Number(venda.valor_venda) - Number(venda.custo_servico)
 
             return (
               <div
@@ -461,11 +482,23 @@ export default function Vendas() {
                   }}
                 >
                   <div>
-                    <div style={{ fontSize: 13, color: '#6b7280', marginBottom: 4 }}>
+                    <div
+                      style={{
+                        fontSize: 13,
+                        color: '#6b7280',
+                        marginBottom: 4,
+                      }}
+                    >
                       Cliente
                     </div>
-                    <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>
-                      {venda.leads?.nome || '-'}
+                    <div
+                      style={{
+                        fontSize: 20,
+                        fontWeight: 700,
+                        color: '#111827',
+                      }}
+                    >
+                      {pegarNomeLead(venda.leads)}
                     </div>
                   </div>
 
@@ -494,7 +527,9 @@ export default function Vendas() {
 
                   <div>
                     <span style={{ color: '#6b7280' }}>Valor da venda: </span>
-                    <b style={{ color: '#16a34a' }}>R$ {Number(venda.valor_venda).toFixed(2)}</b>
+                    <b style={{ color: '#16a34a' }}>
+                      R$ {Number(venda.valor_venda).toFixed(2)}
+                    </b>
                   </div>
 
                   <div>
