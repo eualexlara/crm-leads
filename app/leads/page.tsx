@@ -8,6 +8,7 @@ type Lead = {
   nome: string
   telefone: string
   campanha: string | null
+  origem_lead: string | null
   data_entrada: string
   status_cliente?: string | null
 }
@@ -29,6 +30,7 @@ export default function LeadsPage() {
 
   const [nome, setNome] = useState('')
   const [telefone, setTelefone] = useState('')
+  const [origemLead, setOrigemLead] = useState('anuncio')
   const [campanha, setCampanha] = useState('')
   const [dataEntrada, setDataEntrada] = useState(
     new Date().toISOString().split('T')[0]
@@ -73,6 +75,7 @@ export default function LeadsPage() {
     setEditandoId(null)
     setNome('')
     setTelefone('')
+    setOrigemLead('anuncio')
     setCampanha('')
     setDataEntrada(new Date().toISOString().split('T')[0])
   }
@@ -83,13 +86,21 @@ export default function LeadsPage() {
       return
     }
 
+    const campanhaFinal = origemLead === 'anuncio' ? campanha || null : null
+
+    if (origemLead === 'anuncio' && !campanhaFinal) {
+      alert('Selecione a campanha')
+      return
+    }
+
     if (editandoId) {
       const { error } = await supabase
         .from('leads')
         .update({
           nome,
           telefone,
-          campanha: campanha || null,
+          origem_lead: origemLead,
+          campanha: campanhaFinal,
           data_entrada: dataEntrada,
         })
         .eq('id', editandoId)
@@ -105,7 +116,8 @@ export default function LeadsPage() {
         {
           nome,
           telefone,
-          campanha: campanha || null,
+          origem_lead: origemLead,
+          campanha: campanhaFinal,
           data_entrada: dataEntrada,
           status_cliente: 'lead',
           status: 'lead',
@@ -128,6 +140,7 @@ export default function LeadsPage() {
     setEditandoId(lead.id)
     setNome(lead.nome || '')
     setTelefone(lead.telefone || '')
+    setOrigemLead(lead.origem_lead || 'anuncio')
     setCampanha(lead.campanha || '')
     setDataEntrada(lead.data_entrada || new Date().toISOString().split('T')[0])
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -151,10 +164,6 @@ export default function LeadsPage() {
     buscarLeads()
   }
 
-  function abrirHistorico(id: number) {
-    setLeadAbertoId(leadAbertoId === id ? null : id)
-  }
-
   function inputStyle() {
     return {
       padding: 14,
@@ -167,6 +176,7 @@ export default function LeadsPage() {
       width: '100%',
       WebkitTextFillColor: '#111827',
       opacity: 1,
+      boxSizing: 'border-box',
     } as const
   }
 
@@ -231,6 +241,11 @@ export default function LeadsPage() {
     } as const
   }
 
+  function formatarOrigem(origem: string | null | undefined) {
+    if (origem === 'lead_antigo') return 'Lead antigo'
+    return 'Anúncio'
+  }
+
   const leadsFiltrados = leads.filter((lead) => {
     const status = lead.status_cliente || 'lead'
     if (filtroStatus === 'lead') return status !== 'comprou'
@@ -243,7 +258,8 @@ export default function LeadsPage() {
         minHeight: '100vh',
         padding: 20,
         fontFamily: 'Arial, sans-serif',
-        background: 'linear-gradient(135deg, #eef2ff 0%, #f8fafc 50%, #ecfeff 100%)',
+        background:
+          'linear-gradient(135deg, #eef2ff 0%, #f8fafc 50%, #ecfeff 100%)',
       }}
     >
       <style jsx global>{`
@@ -274,7 +290,8 @@ export default function LeadsPage() {
             marginBottom: 24,
             padding: 24,
             borderRadius: 20,
-            background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 45%, #06b6d4 100%)',
+            background:
+              'linear-gradient(135deg, #1d4ed8 0%, #2563eb 45%, #06b6d4 100%)',
             color: '#ffffff',
             boxShadow: '0 15px 40px rgba(37, 99, 235, 0.35)',
           }}
@@ -328,20 +345,36 @@ export default function LeadsPage() {
             />
 
             <select
-              value={campanha}
-              onChange={(e) => setCampanha(e.target.value)}
+              value={origemLead}
+              onChange={(e) => {
+                setOrigemLead(e.target.value)
+                if (e.target.value === 'lead_antigo') {
+                  setCampanha('')
+                }
+              }}
               style={inputStyle()}
             >
-              <option value="">Selecione a campanha</option>
-              <option value="Mulheres - Cinza">Mulheres - Cinza</option>
-              <option value="Mulheres - Preta">Mulheres - Preta</option>
-              <option value="Mulheres - Amarela">Mulheres - Amarela</option>
-              <option value="Mulheres - Azul">Mulheres - Azul</option>
-              <option value="Mulheres - Cinza nova">Mulheres - Cinza nova</option>
-              <option value="Homens - Cinza">Homens - Cinza</option>
-              <option value="Homens - Preta">Homens - Preta</option>
-              <option value="Homens - Amarela">Homens - Amarela</option>
+              <option value="anuncio">Anúncio</option>
+              <option value="lead_antigo">Lead antigo</option>
             </select>
+
+            {origemLead === 'anuncio' && (
+              <select
+                value={campanha}
+                onChange={(e) => setCampanha(e.target.value)}
+                style={inputStyle()}
+              >
+                <option value="">Selecione a campanha</option>
+                <option value="Mulheres - Cinza">Mulheres - Cinza</option>
+                <option value="Mulheres - Preta">Mulheres - Preta</option>
+                <option value="Mulheres - Amarela">Mulheres - Amarela</option>
+                <option value="Mulheres - Azul">Mulheres - Azul</option>
+                <option value="Mulheres - Cinza nova">Mulheres - Cinza nova</option>
+                <option value="Homens - Cinza">Homens - Cinza</option>
+                <option value="Homens - Preta">Homens - Preta</option>
+                <option value="Homens - Amarela">Homens - Amarela</option>
+              </select>
+            )}
 
             <input
               type="date"
@@ -410,6 +443,9 @@ export default function LeadsPage() {
                       {lead.nome}
                     </div>
                     <div style={{ color: '#4b5563', marginTop: 6 }}>{lead.telefone}</div>
+                    <div style={{ color: '#4b5563', marginTop: 4 }}>
+                      Origem: {formatarOrigem(lead.origem_lead)}
+                    </div>
                     <div style={{ color: '#4b5563', marginTop: 4 }}>
                       {lead.campanha || '-'}
                     </div>
