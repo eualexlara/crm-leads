@@ -208,17 +208,17 @@ export default function VendasPage() {
     buscarVendas()
   }
 
-  function inputStyle() {
+  function inputStyle(textoEscuro = true) {
     return {
       padding: 14,
       border: '1px solid #d1d5db',
       borderRadius: 12,
       background: '#ffffff',
       fontSize: 15,
-      color: '#111827',
+      color: textoEscuro ? '#111827' : '#4b5563',
       outline: 'none',
       width: '100%',
-      WebkitTextFillColor: '#111827',
+      WebkitTextFillColor: textoEscuro ? '#111827' : '#4b5563',
       opacity: 1,
     } as const
   }
@@ -318,7 +318,8 @@ export default function VendasPage() {
         minHeight: '100vh',
         padding: 20,
         fontFamily: 'Arial, sans-serif',
-        background: 'linear-gradient(135deg, #eef2ff 0%, #f8fafc 50%, #ecfeff 100%)',
+        background:
+          'linear-gradient(135deg, #eef2ff 0%, #f8fafc 50%, #ecfeff 100%)',
       }}
     >
       <style jsx global>{`
@@ -332,9 +333,9 @@ export default function VendasPage() {
 
         input::placeholder,
         textarea::placeholder {
-          color: #9ca3af !important;
+          color: #4b5563 !important;
           opacity: 1 !important;
-          -webkit-text-fill-color: #9ca3af !important;
+          -webkit-text-fill-color: #4b5563 !important;
         }
 
         select option {
@@ -349,7 +350,8 @@ export default function VendasPage() {
             marginBottom: 24,
             padding: 24,
             borderRadius: 20,
-            background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 45%, #06b6d4 100%)',
+            background:
+              'linear-gradient(135deg, #1d4ed8 0%, #2563eb 45%, #06b6d4 100%)',
             color: '#ffffff',
             boxShadow: '0 15px 40px rgba(37, 99, 235, 0.35)',
           }}
@@ -377,7 +379,7 @@ export default function VendasPage() {
             <select
               value={leadId}
               onChange={(e) => setLeadId(e.target.value)}
-              style={inputStyle()}
+              style={inputStyle(!!leadId)}
             >
               <option value="">Selecione o lead</option>
               {leads.map((lead) => (
@@ -392,7 +394,7 @@ export default function VendasPage() {
               placeholder="Valor da venda"
               value={valorVenda}
               onChange={(e) => setValorVenda(e.target.value)}
-              style={inputStyle()}
+              style={inputStyle(!!valorVenda)}
             />
 
             <input
@@ -400,14 +402,14 @@ export default function VendasPage() {
               placeholder="Custo do serviço"
               value={custoServico}
               onChange={(e) => setCustoServico(e.target.value)}
-              style={inputStyle()}
+              style={inputStyle(!!custoServico)}
             />
 
             <input
               type="date"
               value={dataVenda}
               onChange={(e) => setDataVenda(e.target.value)}
-              style={inputStyle()}
+              style={inputStyle(true)}
             />
 
             <div
