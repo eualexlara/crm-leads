@@ -157,6 +157,7 @@ export default function LeadsPage() {
       borderRadius: 12,
       background: '#fff',
       fontSize: 15,
+      collor: '#000'
     }
   }
 
