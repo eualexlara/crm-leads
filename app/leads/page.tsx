@@ -199,6 +199,7 @@ export default function LeadsPage() {
             value={nome}
             onChange={(e) => setNome(e.target.value)}
             style={inputStyle()}
+            color: '#000'
           />
 
           <input
@@ -206,6 +207,7 @@ export default function LeadsPage() {
             value={telefone}
             onChange={(e) => setTelefone(e.target.value)}
             style={inputStyle()}
+            color: '#000'
           />
 
           {/* SELECT DE CAMPANHA */}
