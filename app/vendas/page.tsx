@@ -35,7 +35,7 @@ const opcoesEtiquetas = [
   { valor: 'promocao', label: 'Promoção' },
 ]
 
-export default function Vendas() {
+export default function VendasPage() {
   const [leads, setLeads] = useState<Lead[]>([])
   const [vendas, setVendas] = useState<Venda[]>([])
 
@@ -192,7 +192,6 @@ export default function Vendas() {
 
   async function deletarVenda(id: number) {
     const confirmar = confirm('Tem certeza que deseja excluir esta venda?')
-
     if (!confirmar) return
 
     const { error } = await supabase.from('vendas').delete().eq('id', id)
@@ -216,45 +215,51 @@ export default function Vendas() {
       borderRadius: 12,
       background: '#ffffff',
       fontSize: 15,
+      color: '#111827',
       outline: 'none',
-    }
+      width: '100%',
+      WebkitTextFillColor: '#111827',
+      opacity: 1,
+    } as const
   }
 
-  function buttonStyle(variant: 'primary' | 'secondary' | 'danger') {
-    if (variant === 'primary') {
-      return {
-        padding: '12px 18px',
-        border: '1px solid #2563eb',
-        borderRadius: 12,
-        background: '#2563eb',
-        color: '#ffffff',
-        cursor: 'pointer',
-        fontWeight: 700,
-        boxShadow: '0 10px 24px rgba(37, 99, 235, 0.25)',
-      }
-    }
-
-    if (variant === 'danger') {
-      return {
-        padding: '8px 12px',
-        border: '1px solid #ef4444',
-        borderRadius: 10,
-        background: '#ffffff',
-        color: '#ef4444',
-        cursor: 'pointer',
-        fontWeight: 700,
-      }
-    }
-
+  function cardStyle() {
     return {
-      padding: '12px 18px',
+      background: '#ffffff',
+      borderRadius: 18,
+      padding: 20,
+      border: '1px solid rgba(255,255,255,0.4)',
+      boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
+    } as const
+  }
+
+  function buttonPrimaryStyle() {
+    return {
+      padding: '14px 18px',
+      border: '1px solid #2563eb',
+      borderRadius: 14,
+      background: '#2563eb',
+      color: '#ffffff',
+      cursor: 'pointer',
+      fontWeight: 700,
+      fontSize: 16,
+      width: '100%',
+      boxShadow: '0 10px 24px rgba(37, 99, 235, 0.25)',
+    } as const
+  }
+
+  function buttonSecondaryStyle() {
+    return {
+      padding: '14px 18px',
       border: '1px solid #d1d5db',
-      borderRadius: 12,
+      borderRadius: 14,
       background: '#ffffff',
       color: '#111827',
       cursor: 'pointer',
       fontWeight: 700,
-    }
+      fontSize: 16,
+      width: '100%',
+    } as const
   }
 
   function smallButtonStyle() {
@@ -266,17 +271,19 @@ export default function Vendas() {
       color: '#111827',
       cursor: 'pointer',
       fontWeight: 700,
-    }
+    } as const
   }
 
-  function cardStyle() {
+  function dangerButtonStyle() {
     return {
+      padding: '8px 12px',
+      border: '1px solid #ef4444',
+      borderRadius: 10,
       background: '#ffffff',
-      borderRadius: 18,
-      padding: 20,
-      border: '1px solid rgba(255,255,255,0.4)',
-      boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
-    }
+      color: '#ef4444',
+      cursor: 'pointer',
+      fontWeight: 700,
+    } as const
   }
 
   function badgeStyle() {
@@ -289,7 +296,7 @@ export default function Vendas() {
       fontSize: 12,
       fontWeight: 700,
       border: '1px solid #bfdbfe',
-    }
+    } as const
   }
 
   function formatarEtiqueta(etiqueta: string) {
@@ -297,7 +304,7 @@ export default function Vendas() {
     return encontrada ? encontrada.label : etiqueta
   }
 
-  function pegarNomeLead(relacao: LeadRelation) {
+  function pegarNomeLead(relacao: LeadRelation | undefined) {
     if (!relacao) return '-'
     if (Array.isArray(relacao)) {
       return relacao[0]?.nome || '-'
@@ -309,20 +316,40 @@ export default function Vendas() {
     <div
       style={{
         minHeight: '100vh',
-        padding: 30,
-        fontFamily: 'Arial',
-        background:
-          'linear-gradient(135deg, #eef2ff 0%, #f8fafc 50%, #ecfeff 100%)',
+        padding: 20,
+        fontFamily: 'Arial, sans-serif',
+        background: 'linear-gradient(135deg, #eef2ff 0%, #f8fafc 50%, #ecfeff 100%)',
       }}
     >
+      <style jsx global>{`
+        input,
+        select,
+        textarea {
+          color: #111827 !important;
+          -webkit-text-fill-color: #111827 !important;
+          opacity: 1 !important;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+          color: #9ca3af !important;
+          opacity: 1 !important;
+          -webkit-text-fill-color: #9ca3af !important;
+        }
+
+        select option {
+          color: #111827 !important;
+          background: #ffffff !important;
+        }
+      `}</style>
+
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         <div
           style={{
-            marginBottom: 25,
+            marginBottom: 24,
             padding: 24,
             borderRadius: 20,
-            background:
-              'linear-gradient(135deg, #1d4ed8 0%, #2563eb 45%, #06b6d4 100%)',
+            background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 45%, #06b6d4 100%)',
             color: '#ffffff',
             boxShadow: '0 15px 40px rgba(37, 99, 235, 0.35)',
           }}
@@ -335,12 +362,7 @@ export default function Vendas() {
           </p>
         </div>
 
-        <div
-          style={{
-            ...cardStyle(),
-            marginBottom: 24,
-          }}
-        >
+        <div style={{ ...cardStyle(), marginBottom: 24 }}>
           <h2 style={{ marginTop: 0, marginBottom: 18, color: '#111827' }}>
             {editandoId ? 'Editar venda' : 'Cadastro de vendas'}
           </h2>
@@ -349,7 +371,7 @@ export default function Vendas() {
             style={{
               display: 'grid',
               gap: 12,
-              maxWidth: 560,
+              maxWidth: 700,
             }}
           >
             <select
@@ -422,6 +444,7 @@ export default function Vendas() {
                       type="checkbox"
                       checked={etiquetas.includes(item.valor)}
                       onChange={() => toggleEtiqueta(item.valor)}
+                      style={{ width: 18, height: 18 }}
                     />
                     {item.label}
                   </label>
@@ -430,18 +453,12 @@ export default function Vendas() {
             </div>
 
             <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-              <button
-                onClick={salvarOuEditarVenda}
-                style={buttonStyle('primary')}
-              >
+              <button onClick={salvarOuEditarVenda} style={buttonPrimaryStyle()}>
                 {editandoId ? 'Salvar edição' : 'Salvar venda'}
               </button>
 
               {editandoId && (
-                <button
-                  onClick={limparFormulario}
-                  style={buttonStyle('secondary')}
-                >
+                <button onClick={limparFormulario} style={buttonSecondaryStyle()}>
                   Cancelar
                 </button>
               )}
@@ -465,13 +482,7 @@ export default function Vendas() {
               Number(venda.valor_venda) - Number(venda.custo_servico)
 
             return (
-              <div
-                key={venda.id}
-                style={{
-                  ...cardStyle(),
-                  padding: 18,
-                }}
-              >
+              <div key={venda.id} style={cardStyle()}>
                 <div
                   style={{
                     display: 'flex',
@@ -498,7 +509,7 @@ export default function Vendas() {
                         color: '#111827',
                       }}
                     >
-                      {pegarNomeLead(venda.leads || null)}
+                      {pegarNomeLead(venda.leads)}
                     </div>
                   </div>
 
@@ -512,14 +523,14 @@ export default function Vendas() {
 
                     <button
                       onClick={() => deletarVenda(venda.id)}
-                      style={buttonStyle('danger')}
+                      style={dangerButtonStyle()}
                     >
                       Excluir
                     </button>
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gap: 8 }}>
+                <div style={{ display: 'grid', gap: 8, color: '#111827' }}>
                   <div>
                     <span style={{ color: '#6b7280' }}>Data: </span>
                     <b>{venda.data_venda}</b>
