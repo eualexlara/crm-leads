@@ -183,10 +183,10 @@ export default function LeadsPage() {
   function cardStyle() {
     return {
       background: '#ffffff',
-      borderRadius: 18,
-      padding: 20,
+      borderRadius: 16,
+      padding: 16,
       border: '1px solid rgba(255,255,255,0.4)',
-      boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
+      boxShadow: '0 8px 22px rgba(0,0,0,0.07)',
     } as const
   }
 
@@ -219,25 +219,27 @@ export default function LeadsPage() {
 
   function smallButtonStyle() {
     return {
-      padding: '8px 12px',
+      padding: '6px 10px',
       border: '1px solid #d1d5db',
-      borderRadius: 10,
+      borderRadius: 9,
       background: '#ffffff',
       color: '#111827',
       cursor: 'pointer',
       fontWeight: 700,
+      fontSize: 13,
     } as const
   }
 
   function dangerButtonStyle() {
     return {
-      padding: '8px 12px',
+      padding: '6px 10px',
       border: '1px solid #ef4444',
-      borderRadius: 10,
+      borderRadius: 9,
       background: '#ffffff',
       color: '#ef4444',
       cursor: 'pointer',
       fontWeight: 700,
+      fontSize: 13,
     } as const
   }
 
@@ -435,13 +437,13 @@ export default function LeadsPage() {
                     justifyContent: 'space-between',
                     alignItems: 'flex-start',
                     gap: 10,
-                    marginBottom: 12,
+                    marginBottom: 10,
                   }}
                 >
                   <div>
                     <div
                       style={{
-                        fontSize: 11,
+                        fontSize: 15,
                         fontWeight: 600,
                         color: '#111827',
                         lineHeight: 1.2,
@@ -449,11 +451,37 @@ export default function LeadsPage() {
                     >
                       {lead.nome}
                     </div>
-                    <div style={{ color: '#4b5563', marginTop: 6 }}>{lead.telefone}</div>
-                    <div style={{ color: '#4b5563', marginTop: 4 }}>
+
+                    <div
+                      style={{
+                        color: '#4b5563',
+                        marginTop: 4,
+                        fontSize: 13,
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      {lead.telefone}
+                    </div>
+
+                    <div
+                      style={{
+                        color: '#4b5563',
+                        marginTop: 3,
+                        fontSize: 13,
+                        lineHeight: 1.3,
+                      }}
+                    >
                       Origem: {formatarOrigem(lead.origem_lead)}
                     </div>
-                    <div style={{ color: '#4b5563', marginTop: 4 }}>
+
+                    <div
+                      style={{
+                        color: '#4b5563',
+                        marginTop: 3,
+                        fontSize: 13,
+                        lineHeight: 1.3,
+                      }}
+                    >
                       {lead.campanha || '-'}
                     </div>
                   </div>
@@ -469,7 +497,15 @@ export default function LeadsPage() {
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gap: 8, color: '#111827' }}>
+                <div
+                  style={{
+                    display: 'grid',
+                    gap: 6,
+                    color: '#111827',
+                    fontSize: 13,
+                    lineHeight: 1.35,
+                  }}
+                >
                   <div>
                     <span style={{ color: '#6b7280' }}>Data de entrada: </span>
                     <b>{lead.data_entrada}</b>
@@ -489,17 +525,18 @@ export default function LeadsPage() {
                 </div>
 
                 {lead.status_cliente === 'comprou' && (
-                  <div style={{ marginTop: 14 }}>
+                  <div style={{ marginTop: 12 }}>
                     <button
                       onClick={() => setLeadAbertoId(leadAbertoId === lead.id ? null : lead.id)}
                       style={{
-                        padding: '10px 14px',
+                        padding: '8px 12px',
                         border: '1px solid #d1d5db',
-                        borderRadius: 12,
+                        borderRadius: 10,
                         background: '#ffffff',
                         color: '#111827',
                         cursor: 'pointer',
                         fontWeight: 700,
+                        fontSize: 13,
                       }}
                     >
                       {leadAbertoId === lead.id ? 'Fechar histórico' : 'Ver histórico'}
@@ -508,29 +545,35 @@ export default function LeadsPage() {
                     {leadAbertoId === lead.id && (
                       <div
                         style={{
-                          marginTop: 14,
+                          marginTop: 12,
                           background: '#f8fafc',
                           border: '1px solid #e5e7eb',
-                          borderRadius: 14,
-                          padding: 14,
+                          borderRadius: 12,
+                          padding: 12,
                         }}
                       >
                         <div
                           style={{
                             fontWeight: 700,
-                            fontSize: 18,
-                            marginBottom: 10,
+                            fontSize: 16,
+                            marginBottom: 8,
                             color: '#111827',
                           }}
                         >
                           Histórico de compras
                         </div>
 
-                        <div style={{ marginBottom: 12, color: '#111827' }}>
+                        <div
+                          style={{
+                            marginBottom: 10,
+                            color: '#111827',
+                            fontSize: 13,
+                          }}
+                        >
                           <b>Quantidade de compras: {quantidadeCompras}</b>
                         </div>
 
-                        <div style={{ display: 'grid', gap: 12 }}>
+                        <div style={{ display: 'grid', gap: 10 }}>
                           {vendasDoLead.length > 0 ? (
                             vendasDoLead.map((venda) => {
                               const lucro =
@@ -542,9 +585,11 @@ export default function LeadsPage() {
                                   style={{
                                     background: '#ffffff',
                                     border: '1px solid #e5e7eb',
-                                    borderRadius: 12,
-                                    padding: 12,
+                                    borderRadius: 10,
+                                    padding: 10,
                                     color: '#111827',
+                                    fontSize: 13,
+                                    lineHeight: 1.35,
                                   }}
                                 >
                                   <div>
@@ -552,17 +597,17 @@ export default function LeadsPage() {
                                     <b>{venda.data_venda}</b>
                                   </div>
 
-                                  <div style={{ marginTop: 4 }}>
+                                  <div style={{ marginTop: 3 }}>
                                     <span style={{ color: '#6b7280' }}>Valor: </span>
                                     <b>R$ {Number(venda.valor_venda).toFixed(2)}</b>
                                   </div>
 
-                                  <div style={{ marginTop: 4 }}>
+                                  <div style={{ marginTop: 3 }}>
                                     <span style={{ color: '#6b7280' }}>Custo: </span>
                                     <b>R$ {Number(venda.custo_servico).toFixed(2)}</b>
                                   </div>
 
-                                  <div style={{ marginTop: 4 }}>
+                                  <div style={{ marginTop: 3 }}>
                                     <span style={{ color: '#6b7280' }}>Lucro: </span>
                                     <b style={{ color: lucro >= 0 ? '#16a34a' : '#dc2626' }}>
                                       R$ {lucro.toFixed(2)}
@@ -572,7 +617,9 @@ export default function LeadsPage() {
                               )
                             })
                           ) : (
-                            <div style={{ color: '#6b7280' }}>Nenhuma compra encontrada.</div>
+                            <div style={{ color: '#6b7280', fontSize: 13 }}>
+                              Nenhuma compra encontrada.
+                            </div>
                           )}
                         </div>
                       </div>
