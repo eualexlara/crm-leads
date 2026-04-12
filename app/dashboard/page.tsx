@@ -190,26 +190,28 @@ export default function Dashboard() {
 
   function botaoStyle(ativo: boolean) {
     return {
-      padding: '10px 16px',
+      padding: '8px 14px',
       border: ativo ? '1px solid #2563eb' : '1px solid #d1d5db',
-      borderRadius: 10,
+      borderRadius: 12,
       background: ativo ? '#2563eb' : '#ffffff',
       color: ativo ? '#ffffff' : '#111827',
       cursor: 'pointer',
       fontWeight: 600 as const,
+      fontSize: 15,
       boxShadow: ativo
-        ? '0 8px 20px rgba(37, 99, 235, 0.25)'
-        : '0 2px 8px rgba(0,0,0,0.05)',
+        ? '0 6px 16px rgba(37, 99, 235, 0.18)'
+        : '0 1px 4px rgba(0,0,0,0.04)',
+      minHeight: 42,
     }
   }
 
   function cardStyle() {
     return {
       background: '#ffffff',
-      borderRadius: 16,
-      padding: 20,
-      boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
-      border: '1px solid rgba(255,255,255,0.3)',
+      borderRadius: 14,
+      padding: 16,
+      boxShadow: '0 6px 18px rgba(0,0,0,0.06)',
+      border: '1px solid rgba(255,255,255,0.35)',
     }
   }
 
@@ -217,7 +219,7 @@ export default function Dashboard() {
     <div
       style={{
         minHeight: '100vh',
-        padding: 30,
+        padding: 20,
         fontFamily: 'Arial',
         background: 'linear-gradient(135deg, #eef2ff 0%, #f8fafc 50%, #ecfeff 100%)',
       }}
@@ -230,21 +232,21 @@ export default function Dashboard() {
       >
         <div
           style={{
-            marginBottom: 25,
-            padding: 24,
-            borderRadius: 20,
+            marginBottom: 18,
+            padding: 18,
+            borderRadius: 18,
             background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 45%, #06b6d4 100%)',
             color: '#fff',
-            boxShadow: '0 15px 40px rgba(37, 99, 235, 0.35)',
+            boxShadow: '0 10px 24px rgba(37, 99, 235, 0.24)',
           }}
         >
-          <h1 style={{ margin: 0, fontSize: 34 }}>Dashboard</h1>
-          <p style={{ marginTop: 8, marginBottom: 0, opacity: 0.95 }}>
+          <h1 style={{ margin: 0, fontSize: 28 }}>Dashboard</h1>
+          <p style={{ marginTop: 6, marginBottom: 0, opacity: 0.95, fontSize: 15, lineHeight: 1.4 }}>
             Visão geral do seu CRM, vendas, custos, lucro e recompra.
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 20 }}>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 14 }}>
           <button onClick={() => setFiltro('hoje')} style={botaoStyle(filtro === 'hoje')}>
             Hoje
           </button>
@@ -269,45 +271,51 @@ export default function Dashboard() {
           <div
             style={{
               ...cardStyle(),
-              marginBottom: 20,
+              marginBottom: 14,
               display: 'flex',
-              gap: 15,
+              gap: 12,
               flexWrap: 'wrap',
             }}
           >
             <div>
-              <div style={{ marginBottom: 6, fontWeight: 600, color: '#374151' }}>Data inicial</div>
+              <div style={{ marginBottom: 6, fontWeight: 600, color: '#374151', fontSize: 14 }}>
+                Data inicial
+              </div>
               <input
                 type="date"
                 value={dataInicio}
                 onChange={(e) => setDataInicio(e.target.value)}
                 style={{
-                  padding: 12,
+                  padding: 10,
                   border: '1px solid #d1d5db',
                   borderRadius: 10,
                   background: '#fff',
+                  fontSize: 14,
                 }}
               />
             </div>
 
             <div>
-              <div style={{ marginBottom: 6, fontWeight: 600, color: '#374151' }}>Data final</div>
+              <div style={{ marginBottom: 6, fontWeight: 600, color: '#374151', fontSize: 14 }}>
+                Data final
+              </div>
               <input
                 type="date"
                 value={dataFim}
                 onChange={(e) => setDataFim(e.target.value)}
                 style={{
-                  padding: 12,
+                  padding: 10,
                   border: '1px solid #d1d5db',
                   borderRadius: 10,
                   background: '#fff',
+                  fontSize: 14,
                 }}
               />
             </div>
           </div>
         )}
 
-        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 20 }}>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 18 }}>
           <button
             onClick={() => setFiltroOrigem('todos')}
             style={botaoStyle(filtroOrigem === 'todos')}
@@ -333,43 +341,59 @@ export default function Dashboard() {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-            gap: 18,
-            marginBottom: 20,
+            gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))',
+            gap: 14,
+            marginBottom: 14,
           }}
         >
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 8, fontWeight: 600 }}>Leads</div>
-            <div style={{ fontSize: 30, fontWeight: 700, color: '#111827' }}>{totalLeads}</div>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
+              Leads
+            </div>
+            <div style={{ fontSize: 24, fontWeight: 700, color: '#111827' }}>{totalLeads}</div>
           </div>
 
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 8, fontWeight: 600 }}>Leads de anúncio</div>
-            <div style={{ fontSize: 30, fontWeight: 700, color: '#111827' }}>{leadsAnuncio.length}</div>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
+              Leads de anúncio
+            </div>
+            <div style={{ fontSize: 24, fontWeight: 700, color: '#111827' }}>
+              {leadsAnuncio.length}
+            </div>
           </div>
 
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 8, fontWeight: 600 }}>Leads antigos</div>
-            <div style={{ fontSize: 30, fontWeight: 700, color: '#111827' }}>{leadsAntigos.length}</div>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
+              Leads antigos
+            </div>
+            <div style={{ fontSize: 24, fontWeight: 700, color: '#111827' }}>
+              {leadsAntigos.length}
+            </div>
           </div>
 
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 8, fontWeight: 600 }}>Vendas</div>
-            <div style={{ fontSize: 30, fontWeight: 700, color: '#111827' }}>{totalVendas}</div>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
+              Vendas
+            </div>
+            <div style={{ fontSize: 24, fontWeight: 700, color: '#111827' }}>{totalVendas}</div>
           </div>
 
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 8, fontWeight: 600 }}>Faturamento</div>
-            <div style={{ fontSize: 30, fontWeight: 700, color: '#16a34a' }}>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
+              Faturamento
+            </div>
+            <div style={{ fontSize: 24, fontWeight: 700, color: '#16a34a' }}>
               R$ {faturamento.toFixed(2)}
             </div>
           </div>
 
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 8, fontWeight: 600 }}>Lucro</div>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
+              Lucro
+            </div>
             <div
               style={{
-                fontSize: 30,
+                fontSize: 24,
                 fontWeight: 700,
                 color: lucro >= 0 ? '#16a34a' : '#dc2626',
               }}
@@ -382,97 +406,109 @@ export default function Dashboard() {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-            gap: 18,
-            marginBottom: 20,
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            gap: 14,
+            marginBottom: 18,
           }}
         >
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 8, fontWeight: 600 }}>Custo de serviço</div>
-            <div style={{ fontSize: 24, fontWeight: 700, color: '#111827' }}>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
+              Custo de serviço
+            </div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>
               R$ {custoServico.toFixed(2)}
             </div>
           </div>
 
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 8, fontWeight: 600 }}>Custo de tráfego</div>
-            <div style={{ fontSize: 24, fontWeight: 700, color: '#111827' }}>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
+              Custo de tráfego
+            </div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>
               R$ {custoTrafego.toFixed(2)}
             </div>
           </div>
 
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 8, fontWeight: 600 }}>Custo total</div>
-            <div style={{ fontSize: 24, fontWeight: 700, color: '#111827' }}>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
+              Custo total
+            </div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>
               R$ {custoTotal.toFixed(2)}
             </div>
           </div>
 
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 8, fontWeight: 600 }}>Ticket médio</div>
-            <div style={{ fontSize: 24, fontWeight: 700, color: '#111827' }}>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
+              Ticket médio
+            </div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>
               R$ {ticketMedio.toFixed(2)}
             </div>
           </div>
 
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 8, fontWeight: 600 }}>Custo por lead</div>
-            <div style={{ fontSize: 24, fontWeight: 700, color: '#111827' }}>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
+              Custo por lead
+            </div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>
               R$ {custoPorLead.toFixed(2)}
             </div>
           </div>
 
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 8, fontWeight: 600 }}>ROI</div>
-            <div style={{ fontSize: 24, fontWeight: 700, color: '#111827' }}>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
+              ROI
+            </div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>
               {roi.toFixed(2)}x
             </div>
           </div>
         </div>
 
-        <div style={{ marginBottom: 14 }}>
-          <h2 style={{ margin: 0, color: '#111827' }}>Métricas de recompra</h2>
+        <div style={{ marginBottom: 10 }}>
+          <h2 style={{ margin: 0, color: '#111827', fontSize: 20 }}>Métricas de recompra</h2>
         </div>
 
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-            gap: 18,
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            gap: 14,
           }}
         >
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 8, fontWeight: 600 }}>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
               Faturamento de primeira venda
             </div>
-            <div style={{ fontSize: 24, fontWeight: 700, color: '#111827' }}>
+            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>
               R$ {faturamentoPrimeiraVenda.toFixed(2)}
             </div>
           </div>
 
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 8, fontWeight: 600 }}>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
               Faturamento de recompra
             </div>
-            <div style={{ fontSize: 24, fontWeight: 700, color: '#111827' }}>
+            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>
               R$ {faturamentoRecompra.toFixed(2)}
             </div>
           </div>
 
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 8, fontWeight: 600 }}>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
               Porcentagem de recompra
             </div>
-            <div style={{ fontSize: 24, fontWeight: 700, color: '#111827' }}>
+            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>
               {porcentagemRecompra.toFixed(1)}%
             </div>
           </div>
 
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 8, fontWeight: 600 }}>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
               Clientes que voltaram
             </div>
-            <div style={{ fontSize: 24, fontWeight: 700, color: '#111827' }}>
+            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>
               {clientesQueVoltaram}
             </div>
           </div>
