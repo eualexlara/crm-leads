@@ -34,6 +34,7 @@ export default function TrafegoPage() {
   const [linhas, setLinhas] = useState<LinhaCampanha[]>([
     { campanha: '', valor: '' },
   ])
+  const [diaAberto, setDiaAberto] = useState<string | null>(null)
 
   useEffect(() => {
     buscarRegistros()
@@ -229,6 +230,10 @@ export default function TrafegoPage() {
     buscarRegistros()
   }
 
+  function alternarDia(data: string) {
+    setDiaAberto((atual) => (atual === data ? null : data))
+  }
+
   return (
     <div
       style={{
@@ -411,104 +416,111 @@ export default function TrafegoPage() {
         </div>
 
         <div style={{ display: 'grid', gap: 18 }}>
-          {agrupadoPorDia.map((dia) => (
-            <div key={dia.data} style={cardStyle()}>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  gap: 12,
-                  flexWrap: 'wrap',
-                  marginBottom: 12,
-                }}
-              >
-                <div>
-                  <div style={{ color: '#6b7280', fontSize: 13, marginBottom: 2 }}>Dia</div>
-                  <div
-                    style={{
-                      fontSize: 20,
-                      fontWeight: 700,
-                      color: '#111827',
-                    }}
-                  >
-                    {dia.data}
-                  </div>
-                </div>
+          {agrupadoPorDia.map((dia) => {
+            const aberto = diaAberto === dia.data
 
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ color: '#6b7280', fontSize: 13, marginBottom: 2 }}>
-                    Total do dia
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 20,
-                      fontWeight: 700,
-                      color: '#dc2626',
-                    }}
-                  >
-                    R$ {dia.total.toFixed(2)}
-                  </div>
-                </div>
-              </div>
-
-              <div style={{ display: 'grid', gap: 8 }}>
-                {dia.itens.map((item) => (
-                  <div
-                    key={item.id}
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      gap: 10,
-                      flexWrap: 'wrap',
-                      padding: 10,
-                      borderRadius: 12,
-                      border: '1px solid #e5e7eb',
-                      background: '#f8fafc',
-                    }}
-                  >
+            return (
+              <div key={dia.data} style={cardStyle()}>
+                <div
+                  onClick={() => alternarDia(dia.data)}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    gap: 12,
+                    flexWrap: 'wrap',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <div>
+                    <div style={{ color: '#6b7280', fontSize: 13, marginBottom: 2 }}>Dia</div>
                     <div
                       style={{
+                        fontSize: 20,
+                        fontWeight: 700,
                         color: '#111827',
-                        fontWeight: 600,
-                        fontSize: 14,
-                        lineHeight: 1.3,
                       }}
                     >
-                      {item.campanha || '-'}
+                      {dia.data}
                     </div>
+                  </div>
 
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ color: '#6b7280', fontSize: 13, marginBottom: 2 }}>
+                      Total do dia
+                    </div>
                     <div
                       style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 10,
-                        flexWrap: 'wrap',
+                        fontSize: 20,
+                        fontWeight: 700,
+                        color: '#dc2626',
                       }}
                     >
+                      R$ {dia.total.toFixed(2)}
+                    </div>
+                  </div>
+                </div>
+
+                {aberto && (
+                  <div style={{ display: 'grid', gap: 8, marginTop: 12 }}>
+                    {dia.itens.map((item) => (
                       <div
+                        key={item.id}
                         style={{
-                          color: '#dc2626',
-                          fontWeight: 700,
-                          fontSize: 16,
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          gap: 10,
+                          flexWrap: 'wrap',
+                          padding: 10,
+                          borderRadius: 12,
+                          border: '1px solid #e5e7eb',
+                          background: '#f8fafc',
                         }}
                       >
-                        R$ {Number(item.valor).toFixed(2)}
-                      </div>
+                        <div
+                          style={{
+                            color: '#111827',
+                            fontWeight: 600,
+                            fontSize: 14,
+                            lineHeight: 1.3,
+                          }}
+                        >
+                          {item.campanha || '-'}
+                        </div>
 
-                      <button
-                        onClick={() => excluirRegistro(item.id)}
-                        style={dangerButtonStyle()}
-                      >
-                        Excluir
-                      </button>
-                    </div>
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 10,
+                            flexWrap: 'wrap',
+                          }}
+                        >
+                          <div
+                            style={{
+                              color: '#dc2626',
+                              fontWeight: 700,
+                              fontSize: 16,
+                            }}
+                          >
+                            R$ {Number(item.valor).toFixed(2)}
+                          </div>
+
+                          <button
+                            onClick={() => excluirRegistro(item.id)}
+                            style={dangerButtonStyle()}
+                          >
+                            Excluir
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                )}
               </div>
-            </div>
-          ))}
+            )
+          })}
 
           {agrupadoPorDia.length === 0 && (
             <div style={cardStyle()}>
