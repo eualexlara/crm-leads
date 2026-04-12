@@ -10,6 +10,21 @@ type Trafego = {
   campanha: string | null
 }
 
+type Lead = {
+  id: number
+  campanha: string | null
+  origem_lead: string | null
+  data_entrada: string | null
+}
+
+type Venda = {
+  id: number
+  lead_id: number
+  valor_venda: number
+  custo_servico: number
+  data_venda: string
+}
+
 const opcoesCampanha = [
   'Mulheres - Cinza',
   'Mulheres - Preta',
@@ -26,8 +41,21 @@ type LinhaCampanha = {
   valor: string
 }
 
+type ResumoCampanha = {
+  campanha: string
+  gasto: number
+  leads: number
+  vendas: number
+  faturamento: number
+  custoPorLead: number
+  roi: number
+}
+
 export default function TrafegoPage() {
   const [registros, setRegistros] = useState<Trafego[]>([])
+  const [leads, setLeads] = useState<Lead[]>([])
+  const [vendas, setVendas] = useState<Venda[]>([])
+
   const [dataLancamento, setDataLancamento] = useState(
     new Date().toISOString().split('T')[0]
   )
@@ -35,6 +63,19 @@ export default function TrafegoPage() {
     { campanha: '', valor: '' },
   ])
   const [diaAberto, setDiaAberto] = useState<string | null>(null)
+
+  const hoje = new Date().toISOString().split('T')[0]
+  const primeiroDiaMes = new Date(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    1
+  )
+    .toISOString()
+    .split('T')[0]
+
+  const [campanhaSelecionada, setCampanhaSelecionada] = useState('todas')
+  const [dataInicioRelatorio, setDataInicioRelatorio] = useState(primeiroDiaMes)
+  const [dataFimRelatorio, setDataFimRelatorio] = useState(hoje)
 
   useEffect(() => {
     buscarRegistros()
@@ -52,7 +93,27 @@ export default function TrafegoPage() {
       return
     }
 
+    const { data: leadsData, error: leadsError } = await supabase
+      .from('leads')
+      .select('id, campanha, origem_lead, data_entrada')
+
+    if (leadsError) {
+      alert('Erro ao buscar leads: ' + leadsError.message)
+      return
+    }
+
+    const { data: vendasData, error: vendasError } = await supabase
+      .from('vendas')
+      .select('id, lead_id, valor_venda, custo_servico, data_venda')
+
+    if (vendasError) {
+      alert('Erro ao buscar vendas: ' + vendasError.message)
+      return
+    }
+
     setRegistros((data as Trafego[]) || [])
+    setLeads((leadsData as Lead[]) || [])
+    setVendas((vendasData as Venda[]) || [])
   }
 
   function inputStyle(textoEscuro = true) {
@@ -142,6 +203,12 @@ export default function TrafegoPage() {
     setLinhas(novasLinhas)
   }
 
+  function dataDentroRelatorio(data: string | null) {
+    if (!data) return false
+    const dataTexto = data.slice(0, 10)
+    return dataTexto >= dataInicioRelatorio && dataTexto <= dataFimRelatorio
+  }
+
   const totalLancamento = useMemo(() => {
     return linhas.reduce((acc, linha) => {
       const numero = Number(String(linha.valor).replace(',', '.'))
@@ -179,6 +246,90 @@ export default function TrafegoPage() {
       a.data < b.data ? 1 : -1
     )
   }, [registros])
+
+  const leadsRelatorio = useMemo(() => {
+    return leads.filter(
+      (lead) =>
+        lead.origem_lead === 'anuncio' &&
+        dataDentroRelatorio(lead.data_entrada)
+    )
+  }, [leads, dataInicioRelatorio, dataFimRelatorio])
+
+  const resumoPorCampanha = useMemo<ResumoCampanha[]>(() => {
+    return opcoesCampanha.map((campanha) => {
+      const gastosCampanha = registros.filter(
+        (item) =>
+          item.campanha === campanha &&
+          dataDentroRelatorio(item.data)
+      )
+
+      const leadsCampanha = leadsRelatorio.filter(
+        (lead) => lead.campanha === campanha
+      )
+
+      const idsLeadsCampanha = new Set(leadsCampanha.map((lead) => lead.id))
+
+      const vendasCampanha = vendas.filter(
+        (venda) =>
+          idsLeadsCampanha.has(venda.lead_id) &&
+          dataDentroRelatorio(venda.data_venda)
+      )
+
+      const gasto = gastosCampanha.reduce(
+        (acc, item) => acc + Number(item.valor || 0),
+        0
+      )
+
+      const faturamento = vendasCampanha.reduce(
+        (acc, venda) => acc + Number(venda.valor_venda || 0),
+        0
+      )
+
+      const leadsCount = leadsCampanha.length
+      const vendasCount = vendasCampanha.length
+
+      return {
+        campanha,
+        gasto,
+        leads: leadsCount,
+        vendas: vendasCount,
+        faturamento,
+        custoPorLead: leadsCount > 0 ? gasto / leadsCount : 0,
+        roi: gasto > 0 ? faturamento / gasto : 0,
+      }
+    })
+  }, [registros, leadsRelatorio, vendas, dataInicioRelatorio, dataFimRelatorio])
+
+  const resumoSelecionado = useMemo(() => {
+    if (campanhaSelecionada === 'todas') {
+      const gasto = resumoPorCampanha.reduce((acc, item) => acc + item.gasto, 0)
+      const leadsCount = resumoPorCampanha.reduce((acc, item) => acc + item.leads, 0)
+      const vendasCount = resumoPorCampanha.reduce((acc, item) => acc + item.vendas, 0)
+      const faturamento = resumoPorCampanha.reduce((acc, item) => acc + item.faturamento, 0)
+
+      return {
+        campanha: 'Todas as campanhas',
+        gasto,
+        leads: leadsCount,
+        vendas: vendasCount,
+        faturamento,
+        custoPorLead: leadsCount > 0 ? gasto / leadsCount : 0,
+        roi: gasto > 0 ? faturamento / gasto : 0,
+      }
+    }
+
+    return (
+      resumoPorCampanha.find((item) => item.campanha === campanhaSelecionada) || {
+        campanha: campanhaSelecionada,
+        gasto: 0,
+        leads: 0,
+        vendas: 0,
+        faturamento: 0,
+        custoPorLead: 0,
+        roi: 0,
+      }
+    )
+  }, [campanhaSelecionada, resumoPorCampanha])
 
   async function salvarTudo() {
     if (!dataLancamento) {
@@ -408,6 +559,157 @@ export default function TrafegoPage() {
                 Salvar tudo
               </button>
             </div>
+          </div>
+        </div>
+
+        <div style={{ ...cardStyle(), marginBottom: 24 }}>
+          <h2 style={{ marginTop: 0, marginBottom: 16, color: '#111827', fontSize: 24 }}>
+            Relatório por campanha
+          </h2>
+
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+              gap: 10,
+              marginBottom: 16,
+            }}
+          >
+            <select
+              value={campanhaSelecionada}
+              onChange={(e) => setCampanhaSelecionada(e.target.value)}
+              style={inputStyle(true)}
+            >
+              <option value="todas">Todas as campanhas</option>
+              {opcoesCampanha.map((campanha) => (
+                <option key={campanha} value={campanha}>
+                  {campanha}
+                </option>
+              ))}
+            </select>
+
+            <input
+              type="date"
+              value={dataInicioRelatorio}
+              onChange={(e) => setDataInicioRelatorio(e.target.value)}
+              style={inputStyle(true)}
+            />
+
+            <input
+              type="date"
+              value={dataFimRelatorio}
+              onChange={(e) => setDataFimRelatorio(e.target.value)}
+              style={inputStyle(true)}
+            />
+          </div>
+
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+              gap: 12,
+              marginBottom: 18,
+            }}
+          >
+            <div style={cardStyle()}>
+              <div style={{ color: '#6b7280', fontSize: 13, marginBottom: 4 }}>Campanha</div>
+              <div style={{ color: '#111827', fontSize: 16, fontWeight: 700 }}>
+                {resumoSelecionado.campanha}
+              </div>
+            </div>
+
+            <div style={cardStyle()}>
+              <div style={{ color: '#6b7280', fontSize: 13, marginBottom: 4 }}>Gasto</div>
+              <div style={{ color: '#dc2626', fontSize: 20, fontWeight: 700 }}>
+                R$ {resumoSelecionado.gasto.toFixed(2)}
+              </div>
+            </div>
+
+            <div style={cardStyle()}>
+              <div style={{ color: '#6b7280', fontSize: 13, marginBottom: 4 }}>Leads</div>
+              <div style={{ color: '#111827', fontSize: 20, fontWeight: 700 }}>
+                {resumoSelecionado.leads}
+              </div>
+            </div>
+
+            <div style={cardStyle()}>
+              <div style={{ color: '#6b7280', fontSize: 13, marginBottom: 4 }}>Vendas</div>
+              <div style={{ color: '#111827', fontSize: 20, fontWeight: 700 }}>
+                {resumoSelecionado.vendas}
+              </div>
+            </div>
+
+            <div style={cardStyle()}>
+              <div style={{ color: '#6b7280', fontSize: 13, marginBottom: 4 }}>Faturamento</div>
+              <div style={{ color: '#16a34a', fontSize: 20, fontWeight: 700 }}>
+                R$ {resumoSelecionado.faturamento.toFixed(2)}
+              </div>
+            </div>
+
+            <div style={cardStyle()}>
+              <div style={{ color: '#6b7280', fontSize: 13, marginBottom: 4 }}>Custo por lead</div>
+              <div style={{ color: '#111827', fontSize: 20, fontWeight: 700 }}>
+                R$ {resumoSelecionado.custoPorLead.toFixed(2)}
+              </div>
+            </div>
+
+            <div style={cardStyle()}>
+              <div style={{ color: '#6b7280', fontSize: 13, marginBottom: 4 }}>ROI</div>
+              <div style={{ color: '#111827', fontSize: 20, fontWeight: 700 }}>
+                {resumoSelecionado.roi.toFixed(2)}x
+              </div>
+            </div>
+          </div>
+
+          <div style={{ marginBottom: 10, color: '#111827', fontWeight: 700, fontSize: 16 }}>
+            Resumo de todas as campanhas no período
+          </div>
+
+          <div style={{ display: 'grid', gap: 8 }}>
+            {resumoPorCampanha.map((item) => (
+              <div
+                key={item.campanha}
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1.4fr repeat(5, minmax(90px, 1fr))',
+                  gap: 10,
+                  alignItems: 'center',
+                  padding: 10,
+                  borderRadius: 12,
+                  border: '1px solid #e5e7eb',
+                  background: '#f8fafc',
+                }}
+              >
+                <div style={{ fontWeight: 700, fontSize: 14, color: '#111827' }}>
+                  {item.campanha}
+                </div>
+
+                <div style={{ fontSize: 13, color: '#111827' }}>
+                  <span style={{ color: '#6b7280' }}>Gasto:</span><br />
+                  <b>R$ {item.gasto.toFixed(2)}</b>
+                </div>
+
+                <div style={{ fontSize: 13, color: '#111827' }}>
+                  <span style={{ color: '#6b7280' }}>Leads:</span><br />
+                  <b>{item.leads}</b>
+                </div>
+
+                <div style={{ fontSize: 13, color: '#111827' }}>
+                  <span style={{ color: '#6b7280' }}>Vendas:</span><br />
+                  <b>{item.vendas}</b>
+                </div>
+
+                <div style={{ fontSize: 13, color: '#111827' }}>
+                  <span style={{ color: '#6b7280' }}>Faturamento:</span><br />
+                  <b>R$ {item.faturamento.toFixed(2)}</b>
+                </div>
+
+                <div style={{ fontSize: 13, color: '#111827' }}>
+                  <span style={{ color: '#6b7280' }}>CPL:</span><br />
+                  <b>R$ {item.custoPorLead.toFixed(2)}</b>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
