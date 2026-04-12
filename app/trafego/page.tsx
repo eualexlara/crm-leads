@@ -56,11 +56,11 @@ export default function TrafegoPage() {
 
   function inputStyle(textoEscuro = true) {
     return {
-      padding: 14,
+      padding: 12,
       border: '1px solid #d1d5db',
-      borderRadius: 12,
+      borderRadius: 10,
       background: '#ffffff',
-      fontSize: 15,
+      fontSize: 14,
       color: textoEscuro ? '#111827' : '#4b5563',
       outline: 'none',
       width: '100%',
@@ -73,51 +73,52 @@ export default function TrafegoPage() {
   function cardStyle() {
     return {
       background: '#ffffff',
-      borderRadius: 18,
-      padding: 20,
+      borderRadius: 16,
+      padding: 16,
       border: '1px solid rgba(255,255,255,0.4)',
-      boxShadow: '0 10px 30px rgba(0,0,0,0.08)',
+      boxShadow: '0 8px 22px rgba(0,0,0,0.07)',
     } as const
   }
 
   function buttonPrimaryStyle() {
     return {
-      padding: '14px 18px',
+      padding: '12px 16px',
       border: '1px solid #2563eb',
-      borderRadius: 14,
+      borderRadius: 12,
       background: '#2563eb',
       color: '#ffffff',
       cursor: 'pointer',
       fontWeight: 700,
-      fontSize: 16,
+      fontSize: 15,
       width: '100%',
-      boxShadow: '0 10px 24px rgba(37, 99, 235, 0.25)',
+      boxShadow: '0 8px 20px rgba(37, 99, 235, 0.2)',
     } as const
   }
 
   function buttonSecondaryStyle() {
     return {
-      padding: '14px 18px',
+      padding: '12px 16px',
       border: '1px solid #d1d5db',
-      borderRadius: 14,
+      borderRadius: 12,
       background: '#ffffff',
       color: '#111827',
       cursor: 'pointer',
       fontWeight: 700,
-      fontSize: 16,
+      fontSize: 15,
       width: '100%',
     } as const
   }
 
   function dangerButtonStyle() {
     return {
-      padding: '10px 12px',
+      padding: '6px 10px',
       border: '1px solid #ef4444',
-      borderRadius: 10,
+      borderRadius: 9,
       background: '#ffffff',
       color: '#ef4444',
       cursor: 'pointer',
       fontWeight: 700,
+      fontSize: 13,
     } as const
   }
 
@@ -281,8 +282,8 @@ export default function TrafegoPage() {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-            gap: 18,
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            gap: 14,
             marginBottom: 24,
           }}
         >
@@ -290,17 +291,17 @@ export default function TrafegoPage() {
             <div
               style={{
                 color: '#6b7280',
-                marginBottom: 8,
-                fontWeight: 700,
-                fontSize: 18,
+                marginBottom: 6,
+                fontWeight: 600,
+                fontSize: 14,
               }}
             >
               Total deste lançamento
             </div>
             <div
               style={{
-                fontSize: 34,
-                fontWeight: 800,
+                fontSize: 24,
+                fontWeight: 700,
                 color: '#111827',
               }}
             >
@@ -312,17 +313,17 @@ export default function TrafegoPage() {
             <div
               style={{
                 color: '#6b7280',
-                marginBottom: 8,
-                fontWeight: 700,
-                fontSize: 18,
+                marginBottom: 6,
+                fontWeight: 600,
+                fontSize: 14,
               }}
             >
               Último total do dia
             </div>
             <div
               style={{
-                fontSize: 34,
-                fontWeight: 800,
+                fontSize: 24,
+                fontWeight: 700,
                 color: agrupadoPorDia[0] ? '#dc2626' : '#111827',
               }}
             >
@@ -332,11 +333,11 @@ export default function TrafegoPage() {
         </div>
 
         <div style={{ ...cardStyle(), marginBottom: 24 }}>
-          <h2 style={{ marginTop: 0, marginBottom: 18, color: '#111827' }}>
+          <h2 style={{ marginTop: 0, marginBottom: 16, color: '#111827', fontSize: 24 }}>
             Lançamento de tráfego
           </h2>
 
-          <div style={{ display: 'grid', gap: 14 }}>
+          <div style={{ display: 'grid', gap: 10 }}>
             <input
               type="date"
               value={dataLancamento}
@@ -350,7 +351,7 @@ export default function TrafegoPage() {
                 style={{
                   display: 'grid',
                   gridTemplateColumns: '1.2fr 1fr auto',
-                  gap: 12,
+                  gap: 10,
                 }}
               >
                 <select
@@ -391,7 +392,7 @@ export default function TrafegoPage() {
               style={{
                 display: 'grid',
                 gridTemplateColumns: '1fr 1fr',
-                gap: 12,
+                gap: 10,
               }}
             >
               <button onClick={adicionarLinha} style={buttonSecondaryStyle()}>
@@ -406,7 +407,7 @@ export default function TrafegoPage() {
         </div>
 
         <div style={{ marginBottom: 14 }}>
-          <h2 style={{ margin: 0, color: '#111827' }}>Histórico por dia</h2>
+          <h2 style={{ margin: 0, color: '#111827', fontSize: 24 }}>Histórico por dia</h2>
         </div>
 
         <div style={{ display: 'grid', gap: 18 }}>
@@ -419,15 +420,15 @@ export default function TrafegoPage() {
                   alignItems: 'center',
                   gap: 12,
                   flexWrap: 'wrap',
-                  marginBottom: 14,
+                  marginBottom: 12,
                 }}
               >
                 <div>
-                  <div style={{ color: '#6b7280', fontSize: 16 }}>Dia</div>
+                  <div style={{ color: '#6b7280', fontSize: 13, marginBottom: 2 }}>Dia</div>
                   <div
                     style={{
-                      fontSize: 28,
-                      fontWeight: 800,
+                      fontSize: 20,
+                      fontWeight: 700,
                       color: '#111827',
                     }}
                   >
@@ -436,13 +437,13 @@ export default function TrafegoPage() {
                 </div>
 
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ color: '#6b7280', fontSize: 16 }}>
+                  <div style={{ color: '#6b7280', fontSize: 13, marginBottom: 2 }}>
                     Total do dia
                   </div>
                   <div
                     style={{
-                      fontSize: 28,
-                      fontWeight: 800,
+                      fontSize: 20,
+                      fontWeight: 700,
                       color: '#dc2626',
                     }}
                   >
@@ -451,7 +452,7 @@ export default function TrafegoPage() {
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gap: 10 }}>
+              <div style={{ display: 'grid', gap: 8 }}>
                 {dia.itens.map((item) => (
                   <div
                     key={item.id}
@@ -459,15 +460,22 @@ export default function TrafegoPage() {
                       display: 'flex',
                       justifyContent: 'space-between',
                       alignItems: 'center',
-                      gap: 12,
+                      gap: 10,
                       flexWrap: 'wrap',
-                      padding: 14,
-                      borderRadius: 14,
+                      padding: 10,
+                      borderRadius: 12,
                       border: '1px solid #e5e7eb',
                       background: '#f8fafc',
                     }}
                   >
-                    <div style={{ color: '#111827', fontWeight: 700 }}>
+                    <div
+                      style={{
+                        color: '#111827',
+                        fontWeight: 600,
+                        fontSize: 14,
+                        lineHeight: 1.3,
+                      }}
+                    >
                       {item.campanha || '-'}
                     </div>
 
@@ -475,15 +483,15 @@ export default function TrafegoPage() {
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: 12,
+                        gap: 10,
                         flexWrap: 'wrap',
                       }}
                     >
                       <div
                         style={{
                           color: '#dc2626',
-                          fontWeight: 800,
-                          fontSize: 20,
+                          fontWeight: 700,
+                          fontSize: 16,
                         }}
                       >
                         R$ {Number(item.valor).toFixed(2)}
@@ -504,7 +512,7 @@ export default function TrafegoPage() {
 
           {agrupadoPorDia.length === 0 && (
             <div style={cardStyle()}>
-              <div style={{ color: '#6b7280' }}>Nenhum lançamento encontrado.</div>
+              <div style={{ color: '#6b7280', fontSize: 14 }}>Nenhum lançamento encontrado.</div>
             </div>
           )}
         </div>
