@@ -439,7 +439,13 @@ export default function LeadsPage() {
                   }}
                 >
                   <div>
-                    <div style={{ fontSize: 22, fontWeight: 700, color: '#111827' }}>
+                    <div
+                      style={{
+                        fontSize: 18,
+                        fontWeight: 600,
+                        color: '#111827',
+                      }}
+                    >
                       {lead.nome}
                     </div>
                     <div style={{ color: '#4b5563', marginTop: 6 }}>{lead.telefone}</div>
