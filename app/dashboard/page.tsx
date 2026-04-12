@@ -6,6 +6,7 @@ import { supabase } from '../../lib/supabase'
 type Lead = {
   id: number
   data_entrada: string | null
+  origem_lead?: string | null
 }
 
 type Venda = {
@@ -31,6 +32,7 @@ export default function Dashboard() {
   const hoje = new Date().toISOString().split('T')[0]
 
   const [filtro, setFiltro] = useState<'hoje' | 'mes' | 'todos' | 'personalizado'>('todos')
+  const [filtroOrigem, setFiltroOrigem] = useState<'todos' | 'anuncio' | 'lead_antigo'>('todos')
   const [dataInicio, setDataInicio] = useState(hoje)
   const [dataFim, setDataFim] = useState(hoje)
 
@@ -41,7 +43,7 @@ export default function Dashboard() {
   async function buscarDados() {
     const { data: leadsData, error: leadsError } = await supabase
       .from('leads')
-      .select('id, data_entrada')
+      .select('id, data_entrada, origem_lead')
 
     if (leadsError) {
       alert('Erro ao buscar leads: ' + leadsError.message)
@@ -66,7 +68,7 @@ export default function Dashboard() {
       return
     }
 
-    setLeads(leadsData || [])
+    setLeads((leadsData as Lead[]) || [])
     setVendas((vendasData as Venda[]) || [])
     setTrafego(trafegoData || [])
   }
@@ -102,17 +104,44 @@ export default function Dashboard() {
     return true
   }
 
-  const leadsFiltrados = useMemo(() => {
+  const leadsFiltradosPorData = useMemo(() => {
     return leads.filter((item) => dataEstaNoFiltro(item.data_entrada))
   }, [leads, filtro, dataInicio, dataFim])
 
-  const vendasFiltradas = useMemo(() => {
+  const leadsAnuncio = useMemo(() => {
+    return leadsFiltradosPorData.filter((item) => item.origem_lead === 'anuncio')
+  }, [leadsFiltradosPorData])
+
+  const leadsAntigos = useMemo(() => {
+    return leadsFiltradosPorData.filter((item) => item.origem_lead === 'lead_antigo')
+  }, [leadsFiltradosPorData])
+
+  const leadsFiltrados = useMemo(() => {
+    if (filtroOrigem === 'anuncio') return leadsAnuncio
+    if (filtroOrigem === 'lead_antigo') return leadsAntigos
+    return leadsFiltradosPorData
+  }, [filtroOrigem, leadsAnuncio, leadsAntigos, leadsFiltradosPorData])
+
+  const idsLeadsFiltrados = useMemo(() => {
+    return new Set(leadsFiltrados.map((item) => item.id))
+  }, [leadsFiltrados])
+
+  const vendasFiltradasPorData = useMemo(() => {
     return vendas.filter((item) => dataEstaNoFiltro(item.data_venda))
   }, [vendas, filtro, dataInicio, dataFim])
 
-  const trafegoFiltrado = useMemo(() => {
+  const vendasFiltradas = useMemo(() => {
+    return vendasFiltradasPorData.filter((item) => idsLeadsFiltrados.has(item.lead_id))
+  }, [vendasFiltradasPorData, idsLeadsFiltrados])
+
+  const trafegoFiltradoPorData = useMemo(() => {
     return trafego.filter((item) => dataEstaNoFiltro(item.data))
   }, [trafego, filtro, dataInicio, dataFim])
+
+  const trafegoFiltrado = useMemo(() => {
+    if (filtroOrigem === 'lead_antigo') return []
+    return trafegoFiltradoPorData
+  }, [trafegoFiltradoPorData, filtroOrigem])
 
   const totalLeads = leadsFiltrados.length
   const totalVendas = vendasFiltradas.length
@@ -278,6 +307,29 @@ export default function Dashboard() {
           </div>
         )}
 
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 20 }}>
+          <button
+            onClick={() => setFiltroOrigem('todos')}
+            style={botaoStyle(filtroOrigem === 'todos')}
+          >
+            Todos os leads
+          </button>
+
+          <button
+            onClick={() => setFiltroOrigem('anuncio')}
+            style={botaoStyle(filtroOrigem === 'anuncio')}
+          >
+            Leads de anúncio
+          </button>
+
+          <button
+            onClick={() => setFiltroOrigem('lead_antigo')}
+            style={botaoStyle(filtroOrigem === 'lead_antigo')}
+          >
+            Leads antigos
+          </button>
+        </div>
+
         <div
           style={{
             display: 'grid',
@@ -289,6 +341,16 @@ export default function Dashboard() {
           <div style={cardStyle()}>
             <div style={{ color: '#6b7280', marginBottom: 8, fontWeight: 600 }}>Leads</div>
             <div style={{ fontSize: 30, fontWeight: 700, color: '#111827' }}>{totalLeads}</div>
+          </div>
+
+          <div style={cardStyle()}>
+            <div style={{ color: '#6b7280', marginBottom: 8, fontWeight: 600 }}>Leads de anúncio</div>
+            <div style={{ fontSize: 30, fontWeight: 700, color: '#111827' }}>{leadsAnuncio.length}</div>
+          </div>
+
+          <div style={cardStyle()}>
+            <div style={{ color: '#6b7280', marginBottom: 8, fontWeight: 600 }}>Leads antigos</div>
+            <div style={{ fontSize: 30, fontWeight: 700, color: '#111827' }}>{leadsAntigos.length}</div>
           </div>
 
           <div style={cardStyle()}>
