@@ -21,6 +21,25 @@ type VendaHistorico = {
   data_venda: string
 }
 
+const opcoesCampanha = [
+  'Celular 1 - Mulheres - Cinza',
+  'Celular 1 - Mulheres - Preta',
+  'Celular 1 - Mulheres - Amarela',
+  'Celular 1 - Mulheres - Azul',
+  'Celular 1 - Mulheres - Cinza nova',
+  'Celular 1 - Homens - Cinza',
+  'Celular 1 - Homens - Preta',
+  'Celular 1 - Homens - Amarela',
+  'Celular 2 - Mulheres - Cinza',
+  'Celular 2 - Mulheres - Preta',
+  'Celular 2 - Mulheres - Amarela',
+  'Celular 2 - Mulheres - Azul',
+  'Celular 2 - Mulheres - Cinza nova',
+  'Celular 2 - Homens - Cinza',
+  'Celular 2 - Homens - Preta',
+  'Celular 2 - Homens - Amarela',
+]
+
 export default function LeadsPage() {
   const [leads, setLeads] = useState<Lead[]>([])
   const [vendas, setVendas] = useState<VendaHistorico[]>([])
@@ -367,14 +386,11 @@ export default function LeadsPage() {
                 style={inputStyle()}
               >
                 <option value="">Selecione a campanha</option>
-                <option value="Mulheres - Cinza">Mulheres - Cinza</option>
-                <option value="Mulheres - Preta">Mulheres - Preta</option>
-                <option value="Mulheres - Amarela">Mulheres - Amarela</option>
-                <option value="Mulheres - Azul">Mulheres - Azul</option>
-                <option value="Mulheres - Cinza nova">Mulheres - Cinza nova</option>
-                <option value="Homens - Cinza">Homens - Cinza</option>
-                <option value="Homens - Preta">Homens - Preta</option>
-                <option value="Homens - Amarela">Homens - Amarela</option>
+                {opcoesCampanha.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
               </select>
             )}
 
