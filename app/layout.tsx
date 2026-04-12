@@ -41,15 +41,25 @@ export default function RootLayout({
   }
 
   function getStyle(path: string) {
+    const ativo = pathname === path
+
     return {
       textDecoration: 'none',
       fontWeight: 700,
-      padding: '10px 16px',
+      fontSize: 14,
+      padding: '8px 14px',
       borderRadius: 10,
-      border: '1px solid #e5e7eb',
-      background: pathname === path ? '#2563eb' : '#ffffff',
-      color: pathname === path ? '#ffffff' : '#111827',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+      border: ativo ? '1px solid #2563eb' : '1px solid #e5e7eb',
+      background: ativo ? '#2563eb' : '#ffffff',
+      color: ativo ? '#ffffff' : '#111827',
+      boxShadow: ativo
+        ? '0 6px 16px rgba(37, 99, 235, 0.18)'
+        : '0 1px 4px rgba(0,0,0,0.04)',
+      whiteSpace: 'nowrap' as const,
+      display: 'inline-flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: 38,
     }
   }
 
@@ -88,19 +98,19 @@ export default function RootLayout({
               style={{
                 maxWidth: 1200,
                 margin: '0 auto',
-                padding: '14px 20px',
+                padding: '12px 20px',
                 display: 'flex',
-                justifyContent: 'space-between',
                 alignItems: 'center',
-                gap: 20,
-                flexWrap: 'wrap',
+                gap: 16,
               }}
             >
               <div
                 style={{
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: 800,
                   color: '#111827',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
                 }}
               >
                 CRM Leads
@@ -109,9 +119,12 @@ export default function RootLayout({
               <div
                 style={{
                   display: 'flex',
-                  gap: 12,
-                  flexWrap: 'wrap',
                   alignItems: 'center',
+                  gap: 10,
+                  flex: 1,
+                  minWidth: 0,
+                  overflowX: 'auto',
+                  scrollbarWidth: 'none',
                 }}
               >
                 <Link href="/dashboard" style={getStyle('/dashboard')}>
@@ -129,22 +142,26 @@ export default function RootLayout({
                 <Link href="/trafego" style={getStyle('/trafego')}>
                   Tráfego
                 </Link>
-
-                <button
-                  onClick={sair}
-                  style={{
-                    padding: '10px 16px',
-                    borderRadius: 10,
-                    border: '1px solid #ef4444',
-                    background: '#ffffff',
-                    color: '#ef4444',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                  }}
-                >
-                  Sair
-                </button>
               </div>
+
+              <button
+                onClick={sair}
+                style={{
+                  padding: '8px 14px',
+                  borderRadius: 10,
+                  border: '1px solid #ef4444',
+                  background: '#ffffff',
+                  color: '#ef4444',
+                  fontWeight: 700,
+                  fontSize: 14,
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap',
+                  minHeight: 38,
+                  flexShrink: 0,
+                }}
+              >
+                Sair
+              </button>
             </div>
           </div>
         )}
