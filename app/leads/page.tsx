@@ -441,9 +441,10 @@ export default function LeadsPage() {
                   <div>
                     <div
                       style={{
-                        fontSize: 18,
+                        fontSize: 11,
                         fontWeight: 600,
                         color: '#111827',
+                        lineHeight: 1.2,
                       }}
                     >
                       {lead.nome}
