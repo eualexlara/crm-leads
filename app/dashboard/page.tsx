@@ -122,17 +122,37 @@ export default function Dashboard() {
     return leadsFiltradosPorData
   }, [filtroOrigem, leadsAnuncio, leadsAntigos, leadsFiltradosPorData])
 
-  const idsLeadsFiltrados = useMemo(() => {
-    return new Set(leadsFiltrados.map((item) => item.id))
-  }, [leadsFiltrados])
+  const idsLeadsAnuncio = useMemo(() => {
+    return new Set(
+      leads
+        .filter((item) => item.origem_lead === 'anuncio')
+        .map((item) => item.id)
+    )
+  }, [leads])
+
+  const idsLeadsAntigos = useMemo(() => {
+    return new Set(
+      leads
+        .filter((item) => item.origem_lead === 'lead_antigo')
+        .map((item) => item.id)
+    )
+  }, [leads])
 
   const vendasFiltradasPorData = useMemo(() => {
     return vendas.filter((item) => dataEstaNoFiltro(item.data_venda))
   }, [vendas, filtro, dataInicio, dataFim])
 
   const vendasFiltradas = useMemo(() => {
-    return vendasFiltradasPorData.filter((item) => idsLeadsFiltrados.has(item.lead_id))
-  }, [vendasFiltradasPorData, idsLeadsFiltrados])
+    if (filtroOrigem === 'anuncio') {
+      return vendasFiltradasPorData.filter((item) => idsLeadsAnuncio.has(item.lead_id))
+    }
+
+    if (filtroOrigem === 'lead_antigo') {
+      return vendasFiltradasPorData.filter((item) => idsLeadsAntigos.has(item.lead_id))
+    }
+
+    return vendasFiltradasPorData
+  }, [vendasFiltradasPorData, filtroOrigem, idsLeadsAnuncio, idsLeadsAntigos])
 
   const trafegoFiltradoPorData = useMemo(() => {
     return trafego.filter((item) => dataEstaNoFiltro(item.data))
