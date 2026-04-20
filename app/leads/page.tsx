@@ -54,6 +54,7 @@ export default function LeadsPage() {
   const [dataEntrada, setDataEntrada] = useState(
     new Date().toISOString().split('T')[0]
   )
+  const [buscaLead, setBuscaLead] = useState('')
 
   const [filtroStatus, setFiltroStatus] = useState<'lead' | 'comprou'>('lead')
 
@@ -269,8 +270,14 @@ export default function LeadsPage() {
 
   const leadsFiltrados = leads.filter((lead) => {
     const status = lead.status_cliente || 'lead'
-    if (filtroStatus === 'lead') return status !== 'comprou'
-    return status === 'comprou'
+    const passaStatus =
+      filtroStatus === 'lead' ? status !== 'comprou' : status === 'comprou'
+
+    const passaBusca = lead.nome
+      .toLowerCase()
+      .includes(buscaLead.trim().toLowerCase())
+
+    return passaStatus && passaBusca
   })
 
   return (
@@ -425,6 +432,17 @@ export default function LeadsPage() {
                 </button>
               )}
             </div>
+
+            <input
+              placeholder={
+                filtroStatus === 'lead'
+                  ? 'Pesquisar lead pelo nome'
+                  : 'Pesquisar cliente pelo nome'
+              }
+              value={buscaLead}
+              onChange={(e) => setBuscaLead(e.target.value)}
+              style={inputStyle()}
+            />
           </div>
         </div>
 
