@@ -22,22 +22,8 @@ type VendaHistorico = {
 }
 
 const opcoesCampanha = [
-  'Celular 1 - Mulheres - Cinza',
-  'Celular 1 - Mulheres - Preta',
-  'Celular 1 - Mulheres - Amarela',
-  'Celular 1 - Mulheres - Azul',
-  'Celular 1 - Mulheres - Cinza nova',
-  'Celular 1 - Homens - Cinza',
-  'Celular 1 - Homens - Preta',
-  'Celular 1 - Homens - Amarela',
-  'Celular 2 - Mulheres - Cinza',
-  'Celular 2 - Mulheres - Preta',
-  'Celular 2 - Mulheres - Amarela',
-  'Celular 2 - Mulheres - Azul',
-  'Celular 2 - Mulheres - Cinza nova',
-  'Celular 2 - Homens - Cinza',
-  'Celular 2 - Homens - Preta',
-  'Celular 2 - Homens - Amarela',
+  'Anúncio - Homens',
+  'Anúncio - Mulheres',
 ]
 
 export default function LeadsPage() {
