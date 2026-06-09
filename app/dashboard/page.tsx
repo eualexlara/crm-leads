@@ -50,8 +50,10 @@ export default function Dashboard() {
 
   async function buscarDados() {
     const { data: leadsData, error: leadsError } = await supabase
-      .from('leads')
-      .select('id, data_entrada, origem_lead')
+  .from('leads')
+  .select('id, data_entrada, origem_lead')
+  .order('id', { ascending: false })
+  .range(0, 9999)
 
     if (leadsError) {
       alert('Erro ao buscar leads: ' + leadsError.message)
