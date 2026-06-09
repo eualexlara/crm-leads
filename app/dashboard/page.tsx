@@ -34,7 +34,7 @@ export default function Dashboard() {
     const ano = agora.getFullYear()
     const mes = String(agora.getMonth() + 1).padStart(2, '0')
     const dia = String(agora.getDate()).padStart(2, '0')
-    return ${ano}-${mes}-${dia}
+    return ano + '-' + mes + '-' + dia
   }
 
   const hoje = hojeLocal()
@@ -78,7 +78,7 @@ export default function Dashboard() {
 
     setLeads((leadsData as Lead[]) || [])
     setVendas((vendasData as Venda[]) || [])
-    setTrafego(trafegoData || [])
+    setTrafego((trafegoData as Trafego[]) || [])
   }
 
   function normalizarOrigem(origem: string | null | undefined) {
@@ -106,10 +106,7 @@ export default function Dashboard() {
       const mesAtual = agora.getMonth()
       const dataObj = new Date(dataTexto + 'T00:00:00')
 
-      return (
-        dataObj.getFullYear() === anoAtual &&
-        dataObj.getMonth() === mesAtual
-      )
+      return dataObj.getFullYear() === anoAtual && dataObj.getMonth() === mesAtual
     }
 
     if (filtro === 'personalizado') {
@@ -223,9 +220,7 @@ export default function Dashboard() {
   const porcentagemRecompra =
     totalVendas > 0 ? (vendasRecompra.length / totalVendas) * 100 : 0
 
-  const clientesQueVoltaram = new Set(
-    vendasRecompra.map((item) => item.lead_id)
-  ).size
+  const clientesQueVoltaram = new Set(vendasRecompra.map((item) => item.lead_id)).size
 
   function botaoStyle(ativo: boolean) {
     return {
