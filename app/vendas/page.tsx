@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 
 type Lead = {
@@ -41,6 +41,7 @@ export default function VendasPage() {
 
   const [editandoId, setEditandoId] = useState<number | null>(null)
   const [leadId, setLeadId] = useState('')
+  const [buscaLead, setBuscaLead] = useState('')
   const [valorVenda, setValorVenda] = useState('')
   const [custoServico, setCustoServico] = useState('')
   const [dataVenda, setDataVenda] = useState(
@@ -58,6 +59,7 @@ export default function VendasPage() {
       .from('leads')
       .select('id, nome, status_cliente')
       .order('nome', { ascending: true })
+      .range(0, 9999)
 
     if (error) {
       alert('Erro ao buscar leads: ' + error.message)
@@ -80,6 +82,7 @@ export default function VendasPage() {
         leads(nome)
       `)
       .order('id', { ascending: false })
+      .range(0, 9999)
 
     if (error) {
       alert('Erro ao buscar vendas: ' + error.message)
@@ -92,6 +95,7 @@ export default function VendasPage() {
   function limparFormulario() {
     setEditandoId(null)
     setLeadId('')
+    setBuscaLead('')
     setValorVenda('')
     setCustoServico('')
     setDataVenda(new Date().toISOString().split('T')[0])
@@ -142,7 +146,7 @@ export default function VendasPage() {
           valor_venda: valorConvertido,
           custo_servico: custoConvertido,
           data_venda: dataVenda,
-          etiquetas: etiquetas,
+          etiquetas,
         })
         .eq('id', editandoId)
 
@@ -154,17 +158,15 @@ export default function VendasPage() {
       await atualizarStatusLeadParaComprou(Number(leadId))
       alert('Venda editada com sucesso!')
     } else {
-      const { error } = await supabase
-        .from('vendas')
-        .insert([
-          {
-            lead_id: Number(leadId),
-            valor_venda: valorConvertido,
-            custo_servico: custoConvertido,
-            data_venda: dataVenda,
-            etiquetas: etiquetas,
-          },
-        ])
+      const { error } = await supabase.from('vendas').insert([
+        {
+          lead_id: Number(leadId),
+          valor_venda: valorConvertido,
+          custo_servico: custoConvertido,
+          data_venda: dataVenda,
+          etiquetas,
+        },
+      ])
 
       if (error) {
         alert('Erro ao salvar venda: ' + error.message)
@@ -181,8 +183,11 @@ export default function VendasPage() {
   }
 
   function editarVenda(venda: Venda) {
+    const nomeLead = pegarNomeLead(venda.leads)
+
     setEditandoId(venda.id)
     setLeadId(String(venda.lead_id))
+    setBuscaLead(nomeLead === '-' ? '' : nomeLead)
     setValorVenda(String(venda.valor_venda))
     setCustoServico(String(venda.custo_servico))
     setDataVenda(venda.data_venda)
@@ -315,6 +320,18 @@ export default function VendasPage() {
     return relacao.nome || '-'
   }
 
+  const leadSelecionado = leads.find((lead) => String(lead.id) === leadId)
+
+  const leadsFiltradosBusca = useMemo(() => {
+    const busca = buscaLead.trim().toLowerCase()
+
+    if (!busca) return []
+
+    return leads
+      .filter((lead) => lead.nome.toLowerCase().includes(busca))
+      .slice(0, 20)
+  }, [leads, buscaLead])
+
   return (
     <div
       style={{
@@ -368,7 +385,14 @@ export default function VendasPage() {
         </div>
 
         <div style={{ ...cardStyle(), marginBottom: 24 }}>
-          <h2 style={{ marginTop: 0, marginBottom: 16, color: '#111827', fontSize: 24 }}>
+          <h2
+            style={{
+              marginTop: 0,
+              marginBottom: 16,
+              color: '#111827',
+              fontSize: 24,
+            }}
+          >
             {editandoId ? 'Editar venda' : 'Cadastro de vendas'}
           </h2>
 
@@ -379,18 +403,85 @@ export default function VendasPage() {
               maxWidth: 700,
             }}
           >
-            <select
-              value={leadId}
-              onChange={(e) => setLeadId(e.target.value)}
-              style={inputStyle(!!leadId)}
-            >
-              <option value="">Selecione o lead</option>
-              {leads.map((lead) => (
-                <option key={lead.id} value={lead.id}>
-                  {lead.nome}
-                </option>
-              ))}
-            </select>
+            <div>
+              <input
+                type="text"
+                placeholder="Pesquisar lead pelo nome"
+                value={buscaLead}
+                onChange={(e) => {
+                  setBuscaLead(e.target.value)
+                  setLeadId('')
+                }}
+                style={inputStyle(!!buscaLead)}
+              />
+
+              {leadSelecionado && (
+                <div
+                  style={{
+                    marginTop: 8,
+                    padding: 10,
+                    borderRadius: 10,
+                    background: '#eff6ff',
+                    border: '1px solid #bfdbfe',
+                    color: '#1d4ed8',
+                    fontWeight: 700,
+                    fontSize: 13,
+                  }}
+                >
+                  Lead selecionado: {leadSelecionado.nome}
+                </div>
+              )}
+
+              {buscaLead.trim() !== '' && !leadSelecionado && (
+                <div
+                  style={{
+                    marginTop: 8,
+                    border: '1px solid #e5e7eb',
+                    borderRadius: 12,
+                    overflow: 'hidden',
+                    background: '#ffffff',
+                  }}
+                >
+                  {leadsFiltradosBusca.length > 0 ? (
+                    leadsFiltradosBusca.map((lead) => (
+                      <button
+                        key={lead.id}
+                        type="button"
+                        onClick={() => {
+                          setLeadId(String(lead.id))
+                          setBuscaLead(lead.nome)
+                        }}
+                        style={{
+                          display: 'block',
+                          width: '100%',
+                          textAlign: 'left',
+                          padding: 12,
+                          border: 0,
+                          borderBottom: '1px solid #e5e7eb',
+                          background: '#ffffff',
+                          color: '#111827',
+                          cursor: 'pointer',
+                          fontWeight: 600,
+                          fontSize: 14,
+                        }}
+                      >
+                        {lead.nome}
+                      </button>
+                    ))
+                  ) : (
+                    <div
+                      style={{
+                        padding: 12,
+                        color: '#6b7280',
+                        fontSize: 14,
+                      }}
+                    >
+                      Nenhum lead encontrado.
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
 
             <input
               type="text"
@@ -474,7 +565,9 @@ export default function VendasPage() {
         </div>
 
         <div style={{ marginBottom: 14 }}>
-          <h2 style={{ margin: 0, color: '#111827', fontSize: 24 }}>Vendas cadastradas</h2>
+          <h2 style={{ margin: 0, color: '#111827', fontSize: 24 }}>
+            Vendas cadastradas
+          </h2>
         </div>
 
         <div
