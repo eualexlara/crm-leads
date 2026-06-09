@@ -34,7 +34,7 @@ export default function Dashboard() {
     const ano = agora.getFullYear()
     const mes = String(agora.getMonth() + 1).padStart(2, '0')
     const dia = String(agora.getDate()).padStart(2, '0')
-    return '${ano}-${mes}-${dia}'
+    return ${ano}-${mes}-${dia}
   }
 
   const hoje = hojeLocal()
@@ -104,8 +104,8 @@ export default function Dashboard() {
       const agora = new Date()
       const anoAtual = agora.getFullYear()
       const mesAtual = agora.getMonth()
-
       const dataObj = new Date(dataTexto + 'T00:00:00')
+
       return (
         dataObj.getFullYear() === anoAtual &&
         dataObj.getMonth() === mesAtual
@@ -281,222 +281,105 @@ export default function Dashboard() {
         </div>
 
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 14 }}>
-          <button onClick={() => setFiltro('hoje')} style={botaoStyle(filtro === 'hoje')}>
-            Hoje
-          </button>
-
-          <button onClick={() => setFiltro('mes')} style={botaoStyle(filtro === 'mes')}>
-            Este mês
-          </button>
-
-          <button onClick={() => setFiltro('todos')} style={botaoStyle(filtro === 'todos')}>
-            Todos
-          </button>
-
-          <button
-            onClick={() => setFiltro('personalizado')}
-            style={botaoStyle(filtro === 'personalizado')}
-          >
-            Personalizado
-          </button>
+          <button onClick={() => setFiltro('hoje')} style={botaoStyle(filtro === 'hoje')}>Hoje</button>
+          <button onClick={() => setFiltro('mes')} style={botaoStyle(filtro === 'mes')}>Este mês</button>
+          <button onClick={() => setFiltro('todos')} style={botaoStyle(filtro === 'todos')}>Todos</button>
+          <button onClick={() => setFiltro('personalizado')} style={botaoStyle(filtro === 'personalizado')}>Personalizado</button>
         </div>
 
         {filtro === 'personalizado' && (
-          <div
-            style={{
-              ...cardStyle(),
-              marginBottom: 14,
-              display: 'flex',
-              gap: 12,
-              flexWrap: 'wrap',
-            }}
-          >
+          <div style={{ ...cardStyle(), marginBottom: 14, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
             <div>
-              <div style={{ marginBottom: 6, fontWeight: 600, color: '#374151', fontSize: 14 }}>
-                Data inicial
-              </div>
+              <div style={{ marginBottom: 6, fontWeight: 600, color: '#374151', fontSize: 14 }}>Data inicial</div>
               <input
                 type="date"
                 value={dataInicio}
                 onChange={(e) => setDataInicio(e.target.value)}
-                style={{
-                  padding: 10,
-                  border: '1px solid #d1d5db',
-                  borderRadius: 10,
-                  background: '#fff',
-                  fontSize: 14,
-                }}
+                style={{ padding: 10, border: '1px solid #d1d5db', borderRadius: 10, background: '#fff', fontSize: 14 }}
               />
             </div>
 
             <div>
-              <div style={{ marginBottom: 6, fontWeight: 600, color: '#374151', fontSize: 14 }}>
-                Data final
-              </div>
+              <div style={{ marginBottom: 6, fontWeight: 600, color: '#374151', fontSize: 14 }}>Data final</div>
               <input
                 type="date"
                 value={dataFim}
                 onChange={(e) => setDataFim(e.target.value)}
-                style={{
-                  padding: 10,
-                  border: '1px solid #d1d5db',
-                  borderRadius: 10,
-                  background: '#fff',
-                  fontSize: 14,
-                }}
+                style={{ padding: 10, border: '1px solid #d1d5db', borderRadius: 10, background: '#fff', fontSize: 14 }}
               />
             </div>
           </div>
         )}
 
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 18 }}>
-          <button
-            onClick={() => setFiltroOrigem('todos')}
-            style={botaoStyle(filtroOrigem === 'todos')}
-          >
-            Todos os leads
-          </button>
-
-          <button
-            onClick={() => setFiltroOrigem('anuncio')}
-            style={botaoStyle(filtroOrigem === 'anuncio')}
-          >
-            Leads de anúncio
-          </button>
-
-          <button
-            onClick={() => setFiltroOrigem('lead_antigo')}
-            style={botaoStyle(filtroOrigem === 'lead_antigo')}
-          >
-            Leads antigos
-          </button>
+          <button onClick={() => setFiltroOrigem('todos')} style={botaoStyle(filtroOrigem === 'todos')}>Todos os leads</button>
+          <button onClick={() => setFiltroOrigem('anuncio')} style={botaoStyle(filtroOrigem === 'anuncio')}>Leads de anúncio</button>
+          <button onClick={() => setFiltroOrigem('lead_antigo')} style={botaoStyle(filtroOrigem === 'lead_antigo')}>Leads antigos</button>
         </div>
 
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))',
-            gap: 14,
-            marginBottom: 14,
-          }}
-        >
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: 14, marginBottom: 14 }}>
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
-              Leads
-            </div>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>Leads</div>
             <div style={{ fontSize: 24, fontWeight: 700, color: '#111827' }}>{totalLeads}</div>
           </div>
 
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
-              Leads de anúncio
-            </div>
-            <div style={{ fontSize: 24, fontWeight: 700, color: '#111827' }}>
-              {leadsAnuncio.length}
-            </div>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>Leads de anúncio</div>
+            <div style={{ fontSize: 24, fontWeight: 700, color: '#111827' }}>{leadsAnuncio.length}</div>
           </div>
 
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
-              Leads antigos
-            </div>
-            <div style={{ fontSize: 24, fontWeight: 700, color: '#111827' }}>
-              {leadsAntigos.length}
-            </div>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>Leads antigos</div>
+            <div style={{ fontSize: 24, fontWeight: 700, color: '#111827' }}>{leadsAntigos.length}</div>
           </div>
 
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
-              Vendas
-            </div>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>Vendas</div>
             <div style={{ fontSize: 24, fontWeight: 700, color: '#111827' }}>{totalVendas}</div>
           </div>
 
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
-              Faturamento
-            </div>
-            <div style={{ fontSize: 24, fontWeight: 700, color: '#16a34a' }}>
-              R$ {faturamento.toFixed(2)}
-            </div>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>Faturamento</div>
+            <div style={{ fontSize: 24, fontWeight: 700, color: '#16a34a' }}>R$ {faturamento.toFixed(2)}</div>
           </div>
 
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
-              Lucro
-            </div>
-            <div
-              style={{
-                fontSize: 24,
-                fontWeight: 700,
-                color: lucro >= 0 ? '#16a34a' : '#dc2626',
-              }}
-            >
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>Lucro</div>
+            <div style={{ fontSize: 24, fontWeight: 700, color: lucro >= 0 ? '#16a34a' : '#dc2626' }}>
               R$ {lucro.toFixed(2)}
             </div>
           </div>
         </div>
 
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-            gap: 14,
-            marginBottom: 18,
-          }}
-        >
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 14, marginBottom: 18 }}>
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
-              Custo de serviço
-            </div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>
-              R$ {custoServico.toFixed(2)}
-            </div>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>Custo de serviço</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>R$ {custoServico.toFixed(2)}</div>
           </div>
 
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
-              Custo de tráfego
-            </div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>
-              R$ {custoTrafego.toFixed(2)}
-            </div>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>Custo de tráfego</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>R$ {custoTrafego.toFixed(2)}</div>
           </div>
 
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
-              Custo total
-            </div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>
-              R$ {custoTotal.toFixed(2)}
-            </div>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>Custo total</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>R$ {custoTotal.toFixed(2)}</div>
           </div>
 
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
-              Ticket médio
-            </div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>
-              R$ {ticketMedio.toFixed(2)}
-            </div>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>Ticket médio</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>R$ {ticketMedio.toFixed(2)}</div>
           </div>
 
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
-              Custo por lead
-            </div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>
-              R$ {custoPorLead.toFixed(2)}
-            </div>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>Custo por lead</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>R$ {custoPorLead.toFixed(2)}</div>
           </div>
 
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
-              ROI
-            </div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>
-              {roi.toFixed(2)}x
-            </div>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>ROI</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>{roi.toFixed(2)}x</div>
           </div>
         </div>
 
@@ -504,47 +387,25 @@ export default function Dashboard() {
           <h2 style={{ margin: 0, color: '#111827', fontSize: 20 }}>Métricas de recompra</h2>
         </div>
 
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-            gap: 14,
-          }}
-        >
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 14 }}>
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
-              Faturamento de primeira venda
-            </div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>
-              R$ {faturamentoPrimeiraVenda.toFixed(2)}
-            </div>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>Faturamento de primeira venda</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>R$ {faturamentoPrimeiraVenda.toFixed(2)}</div>
           </div>
 
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
-              Faturamento de recompra
-            </div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>
-              R$ {faturamentoRecompra.toFixed(2)}
-            </div>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>Faturamento de recompra</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>R$ {faturamentoRecompra.toFixed(2)}</div>
           </div>
 
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
-              Porcentagem de recompra
-            </div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>
-              {porcentagemRecompra.toFixed(1)}%
-            </div>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>Porcentagem de recompra</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>{porcentagemRecompra.toFixed(1)}%</div>
           </div>
 
           <div style={cardStyle()}>
-            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>
-              Clientes que voltaram
-            </div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>
-              {clientesQueVoltaram}
-            </div>
+            <div style={{ color: '#6b7280', marginBottom: 6, fontWeight: 600, fontSize: 14 }}>Clientes que voltaram</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>{clientesQueVoltaram}</div>
           </div>
         </div>
       </div>
