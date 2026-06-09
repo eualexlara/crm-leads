@@ -29,7 +29,15 @@ export default function Dashboard() {
   const [vendas, setVendas] = useState<Venda[]>([])
   const [trafego, setTrafego] = useState<Trafego[]>([])
 
-  const hoje = new Date().toISOString().split('T')[0]
+  function hojeLocal() {
+    const agora = new Date()
+    const ano = agora.getFullYear()
+    const mes = String(agora.getMonth() + 1).padStart(2, '0')
+    const dia = String(agora.getDate()).padStart(2, '0')
+    return ${ano}-${mes}-${dia}
+  }
+
+  const hoje = hojeLocal()
 
   const [filtro, setFiltro] = useState<'hoje' | 'mes' | 'todos' | 'personalizado'>('todos')
   const [filtroOrigem, setFiltroOrigem] = useState<'todos' | 'anuncio' | 'lead_antigo'>('todos')
@@ -73,11 +81,18 @@ export default function Dashboard() {
     setTrafego(trafegoData || [])
   }
 
+  function normalizarOrigem(origem: string | null | undefined) {
+    if (origem === 'lead_antigo') return 'lead_antigo'
+    return 'anuncio'
+  }
+
   function dataEstaNoFiltro(data: string | null) {
-    if (!data) return false
+    if (!data) {
+      return filtro === 'todos'
+    }
 
     const dataTexto = data.slice(0, 10)
-    const hojeTexto = new Date().toISOString().slice(0, 10)
+    const hojeTexto = hojeLocal()
 
     if (filtro === 'todos') return true
 
@@ -109,11 +124,15 @@ export default function Dashboard() {
   }, [leads, filtro, dataInicio, dataFim])
 
   const leadsAnuncio = useMemo(() => {
-    return leadsFiltradosPorData.filter((item) => item.origem_lead === 'anuncio')
+    return leadsFiltradosPorData.filter(
+      (item) => normalizarOrigem(item.origem_lead) === 'anuncio'
+    )
   }, [leadsFiltradosPorData])
 
   const leadsAntigos = useMemo(() => {
-    return leadsFiltradosPorData.filter((item) => item.origem_lead === 'lead_antigo')
+    return leadsFiltradosPorData.filter(
+      (item) => normalizarOrigem(item.origem_lead) === 'lead_antigo'
+    )
   }, [leadsFiltradosPorData])
 
   const leadsFiltrados = useMemo(() => {
@@ -125,7 +144,7 @@ export default function Dashboard() {
   const idsLeadsAnuncio = useMemo(() => {
     return new Set(
       leads
-        .filter((item) => item.origem_lead === 'anuncio')
+        .filter((item) => normalizarOrigem(item.origem_lead) === 'anuncio')
         .map((item) => item.id)
     )
   }, [leads])
@@ -133,7 +152,7 @@ export default function Dashboard() {
   const idsLeadsAntigos = useMemo(() => {
     return new Set(
       leads
-        .filter((item) => item.origem_lead === 'lead_antigo')
+        .filter((item) => normalizarOrigem(item.origem_lead) === 'lead_antigo')
         .map((item) => item.id)
     )
   }, [leads])
@@ -244,12 +263,7 @@ export default function Dashboard() {
         background: 'linear-gradient(135deg, #eef2ff 0%, #f8fafc 50%, #ecfeff 100%)',
       }}
     >
-      <div
-        style={{
-          maxWidth: 1200,
-          margin: '0 auto',
-        }}
-      >
+      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         <div
           style={{
             marginBottom: 18,
